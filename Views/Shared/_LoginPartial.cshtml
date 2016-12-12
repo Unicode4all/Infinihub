@@ -1,0 +1,67 @@
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity
+@using Infinity.so.Models
+@using Microsoft.Extensions.DependencyInjection
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var user = await UserManager.GetUserAsync(User);
+
+    <li class="dropdown user user-menu">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <img src="../../dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+            <span class="hidden-xs">@user.Ckey</span>
+        </a>
+        <ul class="dropdown-menu">
+            <!-- User image -->
+            <li class="user-header">
+                <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+
+                <p> 
+                    @user.Ckey<br />
+                    @UserManager.GetUserName(User)
+                    
+                    <small>Member since Nov. 2012</small>
+                </p>
+            </li>
+            <!-- Menu Body -->
+            <li class="user-body">
+                <div class="row">
+                    <div class="col-xs-4 text-center">
+                        <a href="#">Followers</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                        <a href="#">Sales</a>
+                    </div>
+                    <div class="col-xs-4 text-center">
+                        <a href="#">Friends</a>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </li>
+            <!-- Menu Footer-->
+            <li class="user-footer">
+                <form asp-area="" asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm">
+                    <div class="pull-left">
+                        
+                        <a asp-area="" asp-controller="Manage" asp-action="Index" class="btn btn-default btn-flat">Управление</a>
+                    </div>
+
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-default btn-flat">Выйти</button>
+                    </div>
+                </form>
+            </li>
+        </ul>
+    </li>
+}
+else
+{
+    <ul class="nav navbar-nav">
+        <li><a asp-area="" asp-controller="Account" asp-action="Register">Зарегистрироваться</a></li>
+        <li><a asp-area="" asp-controller="Account" asp-action="Login">Войти</a></li>
+    </ul>
+}

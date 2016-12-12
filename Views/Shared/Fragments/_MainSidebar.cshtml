@@ -1,0 +1,59 @@
+﻿<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- search form -->
+        <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button type="submit" name="search" id="search-btn" class="btn btn-flat">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+        <!-- /.search form -->
+        <!-- sidebar menu: : style can be found in sidebar.less -->
+        <ul class="sidebar-menu">
+            <li class="header">НАВИГАЦИЯ</li>
+            <li>
+                <a asp-controller="Home" asp-action="Index">
+                    <i class="fa fa-dashboard"></i> <span>Главная</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Bans" asp-action="Index">
+                    <i class="fa fa-info-circle"></i> <span>Баны</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Home" asp-action="About">
+                    <i class="fa fa-bar-chart"></i> <span>Статистика</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Home" asp-action="About">
+                    <i class="fa fa-map"></i> <span>Карта</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Home" asp-action="About">
+                    <i class="fa fa-user"></i> <span>Пользователи</span>
+                </a>
+            </li>
+            <li>
+                <a asp-controller="Home" asp-action="About">
+                    <i class="fa fa-info-circle"></i> <span>О программе</span>
+                </a>
+            </li>
+            <li class="header">АДМИНСКИЕ ШТУКИ</li>
+            <li>
+                <a asp-controller="Home" asp-action="About">
+                    <i class="fa fa-cog"></i> <span>Панель управления</span>
+                </a>
+            </li>
+
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>

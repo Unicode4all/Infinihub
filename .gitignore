@@ -1,0 +1,9 @@
+bin/
+node_modules/*
+obj/
+wwwroot/lib/*
+project.lock.json
+.vscode/
+Properties/
+**/*.min.css
+**/*.min.js

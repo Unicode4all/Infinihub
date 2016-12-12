@@ -1,0 +1,171 @@
+@model IEnumerable<Infinity.so.Models.Ban>
+
+@using Infinity.so.Models
+
+@{
+    ViewData["Title"] = "Баны";
+}
+
+@section styles
+{
+    <environment names="Development">
+        <link rel="stylesheet" href="lib/datatables/media/css/dataTables.bootstrap.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="lib/datatables/media/css/dataTables.bootstrap.min.css" />
+    </environment>
+    
+<style>
+
+    td {
+        background-color: #FFE8E2;
+        empty-cells: hide; /* Прячем пустые ячейки */
+        padding: 5px; /* Поля в ячейках */
+    }
+</style>
+}
+
+<div class="box">
+    <div class="box-body">
+        <table id="bans" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>
+                        Админ
+                    </th>
+                    <th>
+                        Дата бана
+                    </th>
+                    <th>
+                        Конец бана
+                    </th>
+                    <th>
+                        Тип
+                    </th>
+                    <th>
+                        Профессия
+                    </th>
+                    <th>
+                        CID
+                    </th>
+                    <th>
+                        Игрок
+                    </th>
+                    <th>
+                        IP адрес
+                    </th>
+                    <th>
+                        Причина
+                    </th>
+                    <th>
+                        Действия
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AdminCkey)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BanDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BanExpiryTime)
+                        </td>
+                        <td>
+                            @switch (item.BanType)
+                            {
+                                case BanType.SOFT:
+                                    <span>Мягкий</span>
+                                    break;
+                                case BanType.HARD:
+                                    <span>Жесткий</span>
+                                    break;
+                                case BanType.SOFT_PERM:
+                                    <span>Мягкий перманентный</span>
+                                    break;
+                                case BanType.HARD_PERM:
+                                    <span>Жесткий перманентный</span>
+                                    break;
+                                case BanType.APPEARANCE:
+                                    <span>Персонаж</span>
+                                    break;
+                            }
+                            
+                            @if (item.BanExpiryTime < DateTime.Now)
+                            {
+                                <span class="box-danger">EXPIRED</span>
+                            }
+
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Job)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubjectCid)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubjectCkey)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SubjectIPAddress)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Reason)
+                        </td>
+                        <td>
+                            <a class="btn btn-primary btn-flat" asp-action="Edit" asp-route-id="@item.Id">Редактировать</a>
+                            <a class="btn btn-primary btn-flat" asp-action="Details" asp-route-id="@item.Id">Детали</a>
+                            <a class="btn btn-primary btn-flat" asp-action="Delete" asp-route-id="@item.Id">Снять бан</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<p>
+    <a asp-action="Create" class="btn btn-primary btn-flat">Новый бан</a>
+</p>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="createBan">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <p>One fine body&hellip;</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+@section scripts
+{
+    <script src="//cdn.datatables.net/plug-ins/1.10.12/i18n/Russian.json"></script>
+    <script>
+        $(function () {
+            $('#bans').DataTable({
+                                        "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "language": {
+                                            "url": "//cdn.datatables.net/plug-ins/1.10.12/i18n/Russian.json"
+                }
+                                    });
+        });
+    </script>
+}

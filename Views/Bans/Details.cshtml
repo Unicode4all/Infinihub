@@ -1,0 +1,66 @@
+@model Infinity.so.Models.Ban
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Ban</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AdminCkey)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdminCkey)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BanDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BanDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BanExpiryTime)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BanExpiryTime)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BanType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BanType)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Job)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Job)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SubjectCid)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SubjectCid)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SubjectCkey)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SubjectCkey)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SubjectIPAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SubjectIPAddress)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

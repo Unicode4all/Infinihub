@@ -1,0 +1,99 @@
+@model Infinity.so.Models.Ban
+@using System.Threading.Tasks
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = "Добавить бан";
+    ViewData["TitleDescription"] = "создать бан вручную";
+}
+
+<div class="register-box">
+    <div class="register-box-body">
+        <form asp-action="Create">
+            <!-- <div asp-validation-summary="ModelOnly" class="text-danger"></div> -->
+            <div class="form-group has-feedback">
+                <input asp-for="AdminCkey" class="form-control" placeholder=@Localizer["Admin Ckey"] />
+                <span class="fa fa-user form-control-feedback"></span>
+                <span asp-validation-for="AdminCkey" class="text-danger" />
+            </div>
+            <div class="form-group has-feedback">
+                <input asp-for="BanExpiryTime" id="datepicker" class="form-control" placeholder=@Localizer["Ban expiry date (empty for permaban)"] />
+                <span class="fa fa-calendar form-control-feedback"></span>
+                <span asp-validation-for="BanExpiryTime" class="text-danger" />
+            </div>
+            <div class="form-group has-feedback">
+                <select asp-for="BanType" class="form-control">
+                    <option value="SOFT">@Localizer["Soft (Ban Prison)"]</option>
+                    <option value="HARD">@Localizer["Hard (Block connection)"]</option>
+                    <option value="SOFT_PERM">@Localizer["Soft Permaban (Ban Prison)"]</option>
+                    <option value="HARD_PERM">@Localizer["Hard Permaban (Block connection)"]</option>
+                    <option value="Appearance">@Localizer["Appearance (Ban specified character)"]</option>
+                </select>
+                <span class="fa fa-ban form-control-feedback"></span>
+                <span asp-validation-for="BanType" class="text-danger" />
+            </div>
+            <div class="form-group has-feedback">
+                <input asp-for="Job" class="form-control" placeholder=@Localizer["Job (if Jobban)"] />
+                <span class="fa fa-user-plus form-control-feedback"></span>
+                <span asp-validation-for="Job" class="text-danger" />
+            </div>
+            <div class="form-group has-feedback">
+                <input asp-for="SubjectCid" class="form-control" placeholder=@Localizer["Player CID"] />
+                <span class="fa fa-user-secret form-control-feedback"></span>
+                <span asp-validation-for="SubjectCid" class="text-danger" />
+            </div>
+            <div class="form-group has-feedback">
+                <input asp-for="SubjectCkey" class="form-control" placeholder=@Localizer["Player Ckey"] />
+                <span class="fa fa-key form-control-feedback"></span>
+                <span asp-validation-for="SubjectCkey" class="text-danger" />
+            </div>
+            <div class="form-group has-feedback">
+                <input asp-for="SubjectIPAddress" class="form-control" placeholder=@Localizer["Player IP"] />
+                <span class="fa fa-globe form-control-feedback"></span>
+                <span asp-validation-for="SubjectIPAddress" class="text-danger" />
+            </div>
+            <div class="form-group has-feedback">
+                <input asp-for="Reason" class="form-control" placeholder=@Localizer["Reason"] />
+                <span class="fa fa-globe form-control-feedback"></span>
+                <span asp-validation-for="Reason" class="text-danger" />
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+                    <input type="submit" value="Создать" class="btn btn-primary btn-flat" />
+                </div>
+                <div class="col-xs-4">
+                    <a class="btn btn-primary btn-flat" href="javascript:history.back()">@Localizer["Back"]</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+<div>
+
+</div>
+
+@section styles
+{
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/datetimepicker/jquery.datetimepicker.css" />
+    </environment>
+}
+
+@section Scripts {
+    <environment names="Development">
+        <script src="~/lib/php-date-formatter/js/php-date-formatter.js"></script>
+        <script src="~/lib/datetimepicker/jquery.datetimepicker.js"></script>
+    </environment>
+    <script>
+        $('#datepicker').datetimepicker();
+    </script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+}
