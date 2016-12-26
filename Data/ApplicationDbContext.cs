@@ -33,29 +33,29 @@ namespace Infinity.so.Data
             
                 // Add 'admin' role
 
-                var archRole = new IdentityRole("Project Lead");
-                var engRole = new IdentityRole("Chief Engineer");
-                var hadmRole = new IdentityRole("Head of Admins");
-                var wikihRole = new IdentityRole("Head of Wiki");
-                var forumRole = new IdentityRole("Head of Forum");
+                var archRole = new IdentityRole("Host");
+                var engRole = new IdentityRole("Game Admin");
+                var hadmRole = new IdentityRole("Game Master");
+                var wikihRole = new IdentityRole("Trial Admin");
+                var forumRole = new IdentityRole("Developer");
 
-                if (await roleMgr.RoleExistsAsync("Project Lead") == false)
+                if (await roleMgr.RoleExistsAsync("Host") == false)
                 {
                     await roleMgr.CreateAsync(archRole);
                 }
-                if (await roleMgr.RoleExistsAsync("Chief Engineer") == false)
+                if (await roleMgr.RoleExistsAsync("Game Admin") == false)
                 {
                     await roleMgr.CreateAsync(engRole);
                 }
-                if (await roleMgr.RoleExistsAsync("Head of Admins") == false)
+                if (await roleMgr.RoleExistsAsync("Game Master") == false)
                 {
                     await roleMgr.CreateAsync(hadmRole);
                 }
-                if (await roleMgr.RoleExistsAsync("Head of Wiki") == false)
+                if (await roleMgr.RoleExistsAsync("Trial Admin") == false)
                 {
                     await roleMgr.CreateAsync(wikihRole);
                 }
-                if (await roleMgr.RoleExistsAsync("Head of Forum") == false)
+                if (await roleMgr.RoleExistsAsync("Developer") == false)
                 {
                     await roleMgr.CreateAsync(forumRole);
                 }

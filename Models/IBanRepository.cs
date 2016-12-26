@@ -7,7 +7,7 @@ namespace Infinity.so.Models
         void Add(Ban ban);
         IEnumerable<Ban> GetAll();
         Ban Find(string key);
-        Ban Remove(string key);
+        void Remove(string key);
         void Update(Ban ban);
     }
 }

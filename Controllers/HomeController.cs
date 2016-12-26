@@ -4,11 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Infinity.so.Controllers
 {
     public class HomeController : Controller
     {
+        [Authorize]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();

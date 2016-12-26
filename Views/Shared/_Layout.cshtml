@@ -1,14 +1,17 @@
 ﻿@using Microsoft.Extensions.PlatformAbstractions
 @using Microsoft.Extensions.Options
-@inject IOptions<AppearanceOptions> Appearance;
+@using Microsoft.AspNetCore.Authorization
+
+@inject IOptions<AppearanceOptions> Appearance
+
 
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
     <title>@ViewData["Title"] - Infinity.so</title>
 
     <environment names="Development">
@@ -28,7 +31,7 @@
         <link rel="stylesheet" href="~/lib/adminlte/dist/css/AdminLTE.min.css" asp-append-version="true" />
         <link rel="stylesheet" href="~/lib/adminlte/dist/css/skins/_all-skins.min.css" asp-append-version="true" />
     </environment>
-    
+
     @RenderSection("styles", required: false)
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -56,10 +59,12 @@
                     @ViewData["Title"]
                     <small>@ViewData["TitleDescription"]</small>
                 </h1>
+                <!--
                 <ol class="breadcrumb">
                     <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
                     <li class="active">Баны</li>
                 </ol>
+                    -->
             </section>
 
             <!-- Main content -->

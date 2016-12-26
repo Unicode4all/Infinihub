@@ -1,4 +1,7 @@
-﻿<aside class="main-sidebar">
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+<aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
         <!-- search form -->
@@ -46,12 +49,16 @@
                     <i class="fa fa-info-circle"></i> <span>О программе</span>
                 </a>
             </li>
-            <li class="header">АДМИНСКИЕ ШТУКИ</li>
-            <li>
-                <a asp-controller="Home" asp-action="About">
-                    <i class="fa fa-cog"></i> <span>Панель управления</span>
-                </a>
-            </li>
+            @if (await AuthorizationService.AuthorizeAsync(User, "RequireStaff"))
+            {
+                <li class="header">АДМИНСКИЕ ШТУКИ</li>
+                <li>
+                    <a asp-controller="Home" asp-action="About">
+                        <i class="fa fa-cog"></i> <span>Панель управления</span>
+                    </a>
+                </li>
+            }
+
 
         </ul>
     </section>

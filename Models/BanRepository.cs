@@ -15,6 +15,11 @@ namespace Infinity.so.Models
             _context = context;
         }
 
+        public IEnumerable<Ban> GetAll()
+        {
+            return  _context.Bans.ToList();
+        }
+
         public async void Add(Ban ban)
         {
             ban.BanDate = DateTime.Now;
@@ -22,12 +27,12 @@ namespace Infinity.so.Models
             await _context.SaveChangesAsync();
         }
 
-        public async Task<Ban> Find(string key)
+        public Ban Find(string key)
         {
-            return await _context.FindAsync(key);
+            return _context.Bans.Find(key);
         }
 
-        public async Task<IEnumerable> FindByCkey(string query)
+        public async Task<IEnumerable<Ban>> FindByCkey(string query)
         {
             var bans = from b in _context.Bans select b;
 
@@ -42,12 +47,12 @@ namespace Infinity.so.Models
 
         public async void Remove(string key)
         {
-            var ban = await _context.FindAsync(key);
+            var ban = await _context.Bans.FindAsync(key);
             _context.Remove(ban);
             await _context.SaveChangesAsync();
         }
 
-        public void Update(Ban ban)
+        public async void Update(Ban ban)
         {
             _context.Add(ban);
             await _context.SaveChangesAsync();

@@ -53,8 +53,13 @@ namespace Infinity.so
             services.Configure<AuthMessageSenderOptions>(Configuration);
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
-            
-            
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireStaff", policy => policy.RequireRole("Trial Admin", "Game Admin", "Game Master", "Developer", "Host"));
+            });
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
