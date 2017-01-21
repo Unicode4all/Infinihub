@@ -10,6 +10,11 @@ using Infinity.so.Models;
 using Infinity.so.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Razor;
+using System.Threading;
+using System.Threading.Tasks;
+using System;
+using OpenIddict.Core;
+using OpenIddict.Models;
 
 namespace Infinity.so
 {
@@ -33,11 +38,27 @@ namespace Infinity.so
         {
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+                options.UseOpenIddict();
+            });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddOpenIddict()
+                .AddEntityFrameworkCoreStores<ApplicationDbContext>()
+                .AddMvcBinders()
+                .EnableAuthorizationEndpoint("/connect/authorize")
+                .EnableLogoutEndpoint("/connect/logout")
+                .EnableTokenEndpoint("/connect/token")
+     //           .EnableUserinfoEndpoint("/api/userinfo")
+                .UseJsonWebTokens()
+                .AllowPasswordFlow()
+                .AllowAuthorizationCodeFlow()
+                .EnableRequestCaching()
+                .AddEphemeralSigningKey();
 
             services.AddOptions();
 
@@ -51,6 +72,8 @@ namespace Infinity.so
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -108,12 +131,45 @@ namespace Infinity.so
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
+            app.UseOAuthValidation();
+            app.UseOpenIddict();
+
+
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+
+
+            InitializeAsync(app, CancellationToken.None).GetAwaiter().GetResult();
+        }
+
+        private async Task InitializeAsync(IApplicationBuilder app, CancellationToken cancellationToken)
+        {
+            using (var scope = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                await context.Database.EnsureCreatedAsync();
+
+                var manager = scope.ServiceProvider.GetRequiredService<OpenIddictApplicationManager<OpenIddictApplication>>();
+
+                // Postman - REST client for development
+                if (await manager.FindByClientIdAsync("postman", cancellationToken) == null)
+                {
+                    var application = new OpenIddictApplication
+                    {
+                        ClientId = "postman",
+                        DisplayName = "Postman REST Client",
+                        RedirectUri = "https://www.getpostman.com/oauth2/callback"
+                    };
+
+                    await manager.CreateAsync(application, "306564A5-E7FE-49CB-A10D-61AF6E8F3654", cancellationToken);
+                }
+            }
         }
     }
 }

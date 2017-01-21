@@ -4,14 +4,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Infinity.so.Models;
 using Microsoft.AspNetCore.Identity;
+using Infinihub.Models;
+using Infinity.so.Models;
 
 namespace Infinity.so.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Ban> Bans { get; set; }
+        public DbSet<Rank> Ranks { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -33,11 +35,11 @@ namespace Infinity.so.Data
             
                 // Add 'admin' role
 
-                var archRole = new IdentityRole("Host");
-                var engRole = new IdentityRole("Game Admin");
-                var hadmRole = new IdentityRole("Game Master");
-                var wikihRole = new IdentityRole("Trial Admin");
-                var forumRole = new IdentityRole("Developer");
+                var archRole = new Rank("Host",AdminPermissions.R_EVERYTHING);
+                var engRole = new Rank("Game Admin", AdminPermissions.R_BAN|AdminPermissions.R_ADMIN|AdminPermissions.R_DEBUG);
+                var hadmRole = new Rank("Game Master", AdminPermissions.R_INVESTIGATE);
+                var wikihRole = new Rank("Trial Admin", AdminPermissions.R_DEBUG);
+                var forumRole = new Rank("Developer", AdminPermissions.R_DEBUG);
 
                 if (await roleMgr.RoleExistsAsync("Host") == false)
                 {
@@ -62,7 +64,7 @@ namespace Infinity.so.Data
 
 
 
-            if (userMgr.FindByEmailAsync("admin@mydomain.com") == null)
+            if (await userMgr.FindByEmailAsync("admin@mydomain.com") == null)
             {
                 // create admin user
                 var adminUser = new ApplicationUser()
@@ -76,7 +78,7 @@ namespace Infinity.so.Data
                 await userMgr.CreateAsync(adminUser, "Ch@ngem35646");
 
                 await userMgr.SetLockoutEnabledAsync(adminUser, false);
-                await userMgr.AddToRoleAsync(adminUser, "Chief Engineer");
+                await userMgr.AddToRoleAsync(adminUser, "Host");
             }
 
 

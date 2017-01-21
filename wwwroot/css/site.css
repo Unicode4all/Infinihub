@@ -4,6 +4,14 @@
   padding-left: 15px;
   padding-right: 15px; }
 
+.vcenter {
+  display: table-cell;
+  vertical-align: middle;
+  float: none; }
+
+.logo {
+  padding: 6px; }
+
 /* Set widths on the form inputs since otherwise they're 100% wide */
 input,
 select,
