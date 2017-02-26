@@ -1,6 +1,6 @@
-@model IEnumerable<Infinity.so.Models.Ban>
+@model IEnumerable<Infinihub.Models.Ban>
 
-@using Infinity.so.Models
+@using Infinihub.Models
 
 @{
     ViewData["Title"] = "Баны";
@@ -73,29 +73,27 @@
                             @Html.DisplayFor(modelItem => item.BanDate)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.BanExpiryTime)
+                            @Html.DisplayFor(modelItem => item.BanExpirationDate)
                         </td>
                         <td>
                             @switch (item.BanType)
                             {
-                                case BanType.SOFT:
-                                    <span>Мягкий</span>
+                                case BanType.TEMP:
+                                    <span>Временный</span>
                                     break;
-                                case BanType.HARD:
-                                    <span>Жесткий</span>
+                                case BanType.PERMABAN:
+                                    <span>Вечный</span>
                                     break;
-                                case BanType.SOFT_PERM:
-                                    <span>Мягкий перманентный</span>
+                                case BanType.JOBTEMPBAN:
+                                    <span>Джоббан</span>
                                     break;
-                                case BanType.HARD_PERM:
-                                    <span>Жесткий перманентный</span>
+                                case BanType.JOBPERMABAN:
+                                    <span>Вечный джоббан</span>
                                     break;
-                                case BanType.APPEARANCE:
-                                    <span>Персонаж</span>
-                                    break;
+
                             }
                             
-                            @if (item.BanExpiryTime < DateTime.Now)
+                            @if (item.BanExpirationDate < DateTime.Now)
                             {
                                 <span class="box-danger">EXPIRED</span>
                             }

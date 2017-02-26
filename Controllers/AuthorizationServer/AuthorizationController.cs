@@ -1,4 +1,25 @@
-﻿using System;
+﻿//   Copyright 2017 Solaris 13 Foundation
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+
+//       http://www.apache.org/licenses/LICENSE-2.0
+
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+
+//       http://www.apache.org/licenses/LICENSE-2.0
+
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +30,7 @@ using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Core;
 using OpenIddict.Models;
 using System.Diagnostics;
-using Infinity.so.Models;
+using Infinihub.Models;
 using AspNet.Security.OpenIdConnect.Primitives;
 using AspNet.Security.OpenIdConnect.Extensions;
 using AspNet.Security.OpenIdConnect.Server;
@@ -60,7 +81,7 @@ namespace Infinihub.Controllers.AuthorizationServer
             {
                 ApplicationName = application.DisplayName,
                 RequestId = request.RequestId,
-                Scope = request.Scope
+                Scopes = request.Scope.Split(' ')
             });
         }
 
@@ -83,7 +104,12 @@ namespace Infinihub.Controllers.AuthorizationServer
                 });
             }
 
-            var ticket = await CreateTicketAsync(request, user);
+
+
+            var ticket = await CreateTicketAsync(request, user, new AuthenticationProperties
+            {
+                IsPersistent = true
+            });
 
             return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
         }
@@ -123,6 +149,7 @@ namespace Infinihub.Controllers.AuthorizationServer
                 "The OpenIddict binder for ASP.NET Core MVC is not registered. " +
                 "Make sure services.AddOpenIddict().AddMvcBinders() is correctly called.");
 
+            #region Authorization Code flow
             if (request.IsAuthorizationCodeGrantType())
             {
                 // Retrieve the claims principal stored in the authorization code.
@@ -154,6 +181,113 @@ namespace Infinihub.Controllers.AuthorizationServer
 
                 return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
+            #endregion
+
+            #region Password flow
+            else if (request.IsPasswordGrantType())
+            {
+                var user = await _userManager.FindByNameAsync(request.Username);
+                if (user == null)
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The username/password couple is invalid."
+                    });
+                }
+
+                // Ensure the user is allowed to sign in.
+                if (!await _signInManager.CanSignInAsync(user))
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The specified user is not allowed to sign in."
+                    });
+                }
+
+                // Reject the token request if two-factor authentication has been enabled by the user.
+                if (_userManager.SupportsUserTwoFactor && await _userManager.GetTwoFactorEnabledAsync(user))
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The specified user is not allowed to sign in."
+                    });
+                }
+
+                // Ensure the user is not already locked out.
+                if (_userManager.SupportsUserLockout && await _userManager.IsLockedOutAsync(user))
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The username/password couple is invalid."
+                    });
+                }
+
+                // Ensure the password is valid.
+                if (!await _userManager.CheckPasswordAsync(user, request.Password))
+                {
+                    if (_userManager.SupportsUserLockout)
+                    {
+                        await _userManager.AccessFailedAsync(user);
+                    }
+
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The username/password couple is invalid."
+                    });
+                }
+
+                if (_userManager.SupportsUserLockout)
+                {
+                    await _userManager.ResetAccessFailedCountAsync(user);
+                }
+
+                // Create a new authentication ticket.
+                var ticket = await CreateTicketAsync(request, user);
+
+                return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
+            }
+            #endregion
+
+            #region Refresh Token
+            else if (request.IsRefreshTokenGrantType())
+            {
+                // Retrieve the claims principal stored in the refresh token.
+                var info = await HttpContext.Authentication.GetAuthenticateInfoAsync(
+                    OpenIdConnectServerDefaults.AuthenticationScheme);
+
+                // Retrieve the user profile corresponding to the refresh token.
+                var user = await _userManager.GetUserAsync(info.Principal);
+                if (user == null)
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The refresh token is no longer valid."
+                    });
+                }
+
+                // Ensure the user is still allowed to sign in.
+                if (!await _signInManager.CanSignInAsync(user))
+                {
+                    return BadRequest(new OpenIdConnectResponse
+                    {
+                        Error = OpenIdConnectConstants.Errors.InvalidGrant,
+                        ErrorDescription = "The user is no longer allowed to sign in."
+                    });
+                }
+
+                // Create a new authentication ticket, but reuse the properties stored
+                // in the refresh token, including the scopes originally granted.
+                var ticket = await CreateTicketAsync(request, user, info.Properties);
+
+                return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
+            }
+            #endregion
 
             return BadRequest(new OpenIdConnectResponse
             {
@@ -180,10 +314,13 @@ namespace Infinihub.Controllers.AuthorizationServer
             if (!request.IsAuthorizationCodeGrantType() && !request.IsRefreshTokenGrantType())
             {
                 ticket.SetScopes(new[] {
+                    OpenIdConnectConstants.Scopes.OfflineAccess,
                     OpenIdConnectConstants.Scopes.OpenId,
                     OpenIdConnectConstants.Scopes.Email,
                     OpenIdConnectConstants.Scopes.Profile,
-                    OpenIddictConstants.Scopes.Roles
+                    OpenIdConnectConstants.Scopes.Phone,
+                    OpenIddictConstants.Scopes.Roles,
+                    HubConstants.Scopes.Admin
                 }.Intersect(request.GetScopes()));
             }
 

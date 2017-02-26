@@ -1,6 +1,6 @@
 ﻿@using System.Security.Claims
 @using Microsoft.AspNetCore.Identity
-@using Infinity.so.Models
+@using Infinihub.Models
 @using Microsoft.Extensions.DependencyInjection
 
 @inject SignInManager<ApplicationUser> SignInManager
@@ -21,7 +21,7 @@
                 <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                 <p> 
-                    @user.Ckey<br />
+                    @User.Claims.Where(claim => claim.Type == "ckey").Select(c => c.Value).FirstOrDefault()<br />
                     @UserManager.GetUserName(User)
                     
                     <small>Member since Nov. 2012</small>

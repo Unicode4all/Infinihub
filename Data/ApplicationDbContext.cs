@@ -1,4 +1,25 @@
-﻿using System;
+﻿//   Copyright 2017 Solaris 13 Foundation
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+
+//       http://www.apache.org/licenses/LICENSE-2.0
+
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+
+//       http://www.apache.org/licenses/LICENSE-2.0
+
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,14 +27,13 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Infinihub.Models;
-using Infinity.so.Models;
 
-namespace Infinity.so.Data
+namespace Infinihub.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Ban> Bans { get; set; }
-        public DbSet<Rank> Ranks { get; set; }
+        public DbSet<ApplicationRole> Ranks { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -35,11 +55,11 @@ namespace Infinity.so.Data
             
                 // Add 'admin' role
 
-                var archRole = new Rank("Host",AdminPermissions.R_EVERYTHING);
-                var engRole = new Rank("Game Admin", AdminPermissions.R_BAN|AdminPermissions.R_ADMIN|AdminPermissions.R_DEBUG);
-                var hadmRole = new Rank("Game Master", AdminPermissions.R_INVESTIGATE);
-                var wikihRole = new Rank("Trial Admin", AdminPermissions.R_DEBUG);
-                var forumRole = new Rank("Developer", AdminPermissions.R_DEBUG);
+                var archRole = new ApplicationRole("Host",AdminPermissions.R_EVERYTHING);
+                var engRole = new ApplicationRole("Game Admin", AdminPermissions.R_BAN|AdminPermissions.R_ADMIN|AdminPermissions.R_DEBUG);
+                var hadmRole = new ApplicationRole("Game Master", AdminPermissions.R_INVESTIGATE);
+                var wikihRole = new ApplicationRole("Trial Admin", AdminPermissions.R_DEBUG);
+                var forumRole = new ApplicationRole("Developer", AdminPermissions.R_DEBUG);
 
                 if (await roleMgr.RoleExistsAsync("Host") == false)
                 {

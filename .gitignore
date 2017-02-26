@@ -8,3 +8,6 @@ Properties/
 **/*.min.css
 **/*.min.js
 .vs/
+
+**/*.user
+*.lock

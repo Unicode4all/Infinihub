@@ -46,7 +46,42 @@
         <div class="register-box-body">
             <p>Приложение <strong>@Model.ApplicationName</strong> запрашивает доступ к вашей учетной записи.</p>
             <p>Оно сможет делать следующие вещи:</p>
-            <p>@Model.Scope</p>
+
+            <ul class="oauth-scope">
+                @foreach (var s in Model.Scopes)
+                {
+                    switch (s)
+                    {
+                        case "offline_access":
+                            <li>Входить в систему без запроса логина и пароля</li>
+                            break;
+                        case "profile":
+                            <li>Просматривать ваш профиль</li>
+                            break;
+                        case "roles":
+                            <li>Просмотр ранга</li>
+                            break;
+                        case "email":
+                            <li>Просматривать ваш адрес электронной почты</li>
+                            break;
+                        case "phone":
+                            <li>Просматривать ваш номер телефона, если он задан</li>
+                            break;
+                        case "openid":
+                            <li>Входить в систему с вашей учетной записью</li>
+                            break;
+                        case "admin":
+                            <li>Производить админские действия: добавлять или снимать баны, админов и т.п.</li>
+                            break;
+                        default:
+                            <li>Неизвестное действие "@s"</li>
+                            break;
+                    }
+
+                }
+            </ul>
+
+
             <form method="post">
                 @Html.AntiForgeryToken()
                 <div class="row">
@@ -89,7 +124,7 @@
     <script>
   $(function () {
     $('input').iCheck({
-      checkboxClass: 'icheckbox_square-blue',
+                        checkboxClass: 'icheckbox_square-blue',
       radioClass: 'iradio_square-blue',
       increaseArea: '20%' // optional
     });

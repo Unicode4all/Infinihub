@@ -1,4 +1,4 @@
-@model Infinity.so.Models.Ban
+@model Infinihub.Models.Ban
 @using System.Threading.Tasks
 @using Microsoft.AspNetCore.Mvc.Localization
 
@@ -19,17 +19,17 @@
                 <span asp-validation-for="AdminCkey" class="text-danger" />
             </div>
             <div class="form-group has-feedback">
-                <input asp-for="BanExpiryTime" id="datepicker" class="form-control" placeholder=@Localizer["Ban expiry date (empty for permaban)"] />
+                <input asp-for="BanExpiration" class="form-control" placeholder=@Localizer["Ban duration (minutes)"] />
                 <span class="fa fa-calendar form-control-feedback"></span>
-                <span asp-validation-for="BanExpiryTime" class="text-danger" />
+                <span asp-validation-for="BanExpiration" class="text-danger" />
             </div>
             <div class="form-group has-feedback">
                 <select asp-for="BanType" class="form-control">
-                    <option value="SOFT">@Localizer["Soft (Ban Prison)"]</option>
-                    <option value="HARD">@Localizer["Hard (Block connection)"]</option>
-                    <option value="SOFT_PERM">@Localizer["Soft Permaban (Ban Prison)"]</option>
-                    <option value="HARD_PERM">@Localizer["Hard Permaban (Block connection)"]</option>
-                    <option value="Appearance">@Localizer["Appearance (Ban specified character)"]</option>
+                    <option value="TEMP">@Localizer["Temporary"]</option>
+                    <option value="PERMABAN">@Localizer["Permanent"]</option>
+                    <option value="JOBTEMPBAN">@Localizer["Job temporary"]</option>
+                    <option value="JOBPERMABAN">@Localizer["Job permanent"]</option>
+                    <option value="CHARACTER">@Localizer["Ban character"]</option>
                 </select>
                 <span class="fa fa-ban form-control-feedback"></span>
                 <span asp-validation-for="BanType" class="text-danger" />
